@@ -1,0 +1,180 @@
+/body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1 {
+            color: rgb(12, 25, 199);
+            text-align: center;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: rgb(12, 186, 199);
+            color: white;
+        }
+        .actions button {
+            margin-right: 5px;
+            background-color: rgb(12, 186, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .actions button.delete {
+            background-color: #e74c3c;
+        }
+        .actions button.print {
+            background-color: #27ae60;
+        }
+        .add-user-form input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .add-user-form button {
+            background-color: rgb(12, 186, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .filter-form input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .filter-form button {
+            background-color: rgb(12, 25, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="1 div pic.jpg" alt="Organisation Logo" width="120" class="logo">
+        <h1>Admin Dashboard</h1>
+
+        <div class="section">
+            <h2>Dashboard</h2>
+            <p>Welcome, Admin Head! Here you can manage visitors and users.</p>
+        </div>
+
+        <div class="section">
+            <h2>Visitor Record</h2>
+            <form class="filter-form">
+                <label for="date">Filter by Date:</label>
+                <input type="date" id="date" name="date">
+                <button type="button" onclick="filterByDate()">Search</button>
+                <button type="button" class="print" onclick="window.print()">Print</button>
+            </form>
+            <table id="visitorTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>2025-07-22</td>
+                        <td>Meeting</td>
+                    </tr>
+                    <!-- Add more visitor records here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Add User</h2>
+            <form class="add-user-form" onsubmit="addUser(event)">
+                <input type="text" id="newUsername" placeholder="Username" required>
+                <input type="password" id="newPassword" placeholder="Password" required>
+                <button type="submit">Add User</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>Delete Users</h2>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>staff1</td>
+                        <td class="actions">
+                            <button class="delete" onclick="deleteUser(this)">Delete</button>
+                        </td>
+                    </tr>
+                    <!-- Add more users here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function filterByDate() {
+            // Add your filter logic here
+            alert('Filter by date feature coming soon!');
+        }
+
+        function addUser(event) {
+            event.preventDefault();
+            const username = document.getElementById('newUsername').value;
+            const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+            const newRow = userTable.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            cell1.textContent = username;
+            cell2.innerHTML = '<button class="delete" onclick="deleteUser(this)">Delete</button>';
+            document.getElementById('newUsername').value = '';
+            document.getElementById('newPassword').value = '';
+        }
+
+        function deleteUser(btn) {
+            const row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+    </script>
+</body>
+</html>

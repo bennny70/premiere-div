@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: rgb(12, 25, 199);
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: rgb(12, 186, 199);
+            color: white;
+        }
+        .actions button {
+            margin-right: 5px;
+            background-color: rgb(12, 186, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .actions button.delete {
+            background-color: #e74c3c;
+        }
+        .actions button.print {
+            background-color: #27ae60;
+        }
+        .add-user-form input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .add-user-form button {
+            background-color: rgb(12, 186, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .filter-form input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .filter-form button {
+            background-color: rgb(12, 25, 199);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .dashboard-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .dashboard-btns button {
+            background-color: rgb(12, 186, 199);
+            color: white;
+            border: none;
+            padding: 20px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            min-width: 180px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+        }
+        .dashboard-btns button:hover {
+            background-color: rgb(12, 25, 199);
+        }
+        .new-visitor-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .new-visitor-btn:hover {
+            background-color: #219150;
+        }
+        /* Popup styles */
+        .popup-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .popup, .idcard {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .popup h2 {
+            margin-top: 0;
+            color: rgb(12, 25, 199);
+        }
+        .popup label {
+            display: block;
+            margin-top: 10px;
+            text-align: left;
+        }
+        .popup input, .popup select, .popup textarea {
+            width: 100%;
+            padding: 7px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .popup .close-btn, .idcard .close-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #video, #capturedImg {
+            width: 100%;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        #captureBtn {
+            background: #219150;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        /* ID Card styles */
+        .idcard-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .idcard img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .idcard h3 {
+            margin: 10px 0 5px 0;
+            color: rgb(12, 25, 199);
+        }
+        .idcard p {
+            margin: 5px 0;
+        }
+        .idcard .print-btn {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .idcard-bg, .idcard-bg * {
+                visibility: visible;
+            }
+            .idcard-bg {
+                position: static !important;
+                background: none !important;
+            }
+            .idcard {
+                box-shadow: none !important;
+                margin: 0 auto !important;
+            }
+            .idcard .close-btn, .idcard .print-btn {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="1 div pic.jpg" alt="Organisation Logo" width="120" class="logo">
+    <h1>Admin Dashboard</h1>
+    <div class="section">
+        <div class="dashboard-btns">
+            <button onclick="showForm('Total Visitors Today')">Total Visitors Today: <span id="totalVisitors">10</span></button>
+            <button onclick="showForm('Invited Guests')">Invited Guests: <span id="invitedGuests">4</span></button>
+            <button onclick="showForm('Workers')">Workers: <span id="workers">6</span></button>
+            <button onclick="showForm('Total Entered')">Total Entered: <span id="totalEntered">9</span></button>
+        </div>
+        <button class="new-visitor-btn" onclick="showForm('New Visitor')">New Visitor</button>
+    </div>
+    <div class="section">
+        <h2>Visitor Record</h2>
+        <form class="filter-form">
+            <label for="date">Filter by Date:</label>
+            <input type="date" id="date" name="date">
+            <button type="button" onclick="filterByDate()">Search</button>
+            <button type="button" class="print" onclick="window.print()">Print</button>
+        </form>
+        <table id="visitorTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>2025-07-22</td>
+                    <td>Meeting</td>
+                </tr>
+                <!-- Add more visitor records here -->
+            </tbody>
+        </table>
+    </div>
+    <div class="section">
+        <h2>Add User</h2>
+        <form class="add-user-form" onsubmit="addUser(event)">
+            <input type="text" id="newUsername" placeholder="Username" required>
+            <input type="password" id="newPassword" placeholder="Password" required>
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+    <div class="section">
+        <h2>Delete Users</h2>
+        <table id="userTable">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>staff1</td>
+                    <td class="actions">
+                        <button class="delete" onclick="deleteUser(this)">Delete</button>
+                    </td>
+                </tr>
+                <!-- Add more users here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Popup Form -->
+<div class="popup-bg" id="popupBg">
+    <div class="popup">
+        <button class="close-btn" onclick="closeForm()">&times;</button>
+        <h2 id="formTitle">Visitor Form</h2>
+        <form id="visitorForm">
+            <label for="visitorType">Visitor Type:</label>
+            <select id="visitorType" required>
+                <option value="">Select Type</option>
+                <option value="Guest">Guest</option>
+                <option value="Worker">Worker</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="surname">Surname:</label>
+            <input type="text" id="surname" required>
+            <label for="otherNames">Other Names:</label>
+            <input type="text" id="otherNames" required>
+            <label for="age">Age:</label>
+            <input type="number" id="age" min="0" required>
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            <label for="mobile">Mobile Number:</label>
+            <input type="tel" id="mobile" required>
+            <label>Picture:</label>
+            <button type="button" id="pictureBtn" onclick="startCamera()">Take Picture</button>
+            <video id="video" autoplay style="display:none;"></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <img id="capturedImg" style="display:none;">
+            <button type="button" id="captureBtn" style="display:none;" onclick="capturePhoto()">Snap</button>
+            <label for="visiting">Who are you visiting?</label>
+            <input type="text" id="visiting" required>
+            <label for="unit">Unit:</label>
+            <input type="text" id="unit" required>
+            <label for="address">Contact Address:</label>
+            <input type="text" id="address" required>
+            <label for="purpose">Purpose of Visit:</label>
+            <input type="text" id="purpose" required>
+            <label for="remark">Remark:</label>
+            <textarea id="remark"></textarea>
+            <button type="submit" style="background:rgb(12,186,199);color:#fff;">Submit</button>
+        </form>
+    </div>
+</div>
+<!-- ID Card Popup -->
+<div class="idcard-bg" id="idcardBg">
+    <div class="idcard" id="idcard">
+        <button class="close-btn" onclick="closeIDCard()">&times;</button>
+        <img id="idcardImg" src="" alt="Visitor Picture">
+        <h3 id="idcardName"></h3>
+        <p><strong>Destination:</strong> <span id="idcardDestination"></span></p>
+        <p><strong>Purpose:</strong> <span id="idcardPurpose"></span></p>
+        <button class="print-btn" onclick="window.print()">Print ID Card</button>
+    </div>
+</div>
+<script>
+    // Dashboard numbers
+    let totalVisitors = 10;
+    let invitedGuests = 4;
+    let workers = 6;
+    let totalEntered = 9;
+    document.getElementById('totalVisitors').textContent = totalVisitors;
+    document.getElementById('invitedGuests').textContent = invitedGuests;
+    document.getElementById('workers').textContent = workers;
+    document.getElementById('totalEntered').textContent = totalEntered;
+
+    // Visitor form popup
+    function showForm(title) {
+        document.getElementById('formTitle').textContent = title + " - Visitor Form";
+        document.getElementById('popupBg').style.display = 'flex';
+    }
+    function closeForm() {
+        document.getElementById('popupBg').style.display = 'none';
+        stopCamera();
+    }
+    // Camera logic
+    let stream = null;
+    let capturedPhoto = "";
+    function startCamera() {
+        const video = document.getElementById('video');
+        const captureBtn = document.getElementById('captureBtn');
+        video.style.display = 'block';
+        captureBtn.style.display = 'inline-block';
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(s => {
+                stream = s;
+                video.srcObject = stream;
+            });
+    }
+    function capturePhoto() {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const img = document.getElementById('capturedImg');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        capturedPhoto = canvas.toDataURL('image/png');
+        img.src = capturedPhoto;
+        img.style.display = 'block';
+        canvas.style.display = 'none';
+        video.style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'none';
+        stopCamera();
+    }
+    function stopCamera() {
+        const video = document.getElementById('video');
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        video.style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'none';
+    }
+    // Form submission
+    document.getElementById('visitorForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Get form values
+        const surname = document.getElementById('surname').value;
+        const otherNames = document.getElementById('otherNames').value;
+        const visiting = document.getElementById('visiting').value;
+        const purpose = document.getElementById('purpose').value;
+        // Show ID card
+        document.getElementById('idcardName').textContent = surname + " " + otherNames;
+        document.getElementById('idcardDestination').textContent = visiting;
+        document.getElementById('idcardPurpose').textContent = purpose;
+        document.getElementById('idcardImg').src = capturedPhoto || "https://via.placeholder.com/120";
+        document.getElementById('idcardBg').style.display = 'flex';
+        closeForm();
+    };
+    function closeIDCard() {
+        document.getElementById('idcardBg').style.display = 'none';
+    }
+    // Visitor record filter
+    function filterByDate() {
+        alert('Filter by date feature coming soon!');
+    }
+    // Add/Delete user logic
+    function addUser(event) {
+        event.preventDefault();
+        const username = document.getElementById('newUsername').value;
+        const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        const newRow = userTable.insertRow();
+        const cell1 = newRow.insertCell(0);
+        const cell2 = newRow.insertCell(1);
+        cell1.textContent = username;
+        cell2.innerHTML = '<button class="delete" onclick="deleteUser(this)">Delete</button>';
+        document.getElementById('newUsername').value = '';
+        document.getElementById('newPassword').value = '';
+    }
+    function deleteUser(btn) {
+        const row = btn.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+</script>
+</body>
+</html>
